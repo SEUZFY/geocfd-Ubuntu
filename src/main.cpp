@@ -1,21 +1,15 @@
 #include "FileIO.h"
 #include <CGAL/Polyhedron_3.h>
 
-// get file path
-#include <string>
-#include <filesystem>
-#include <unistd.h>
-#include <stdio.h>
-
-#define DATA_PATH "/home/fengyan/geocfd/data"
-
-//using std::filesystem::current_path;
-
+//#define DATA_PATH "/home/fengyan/geocfd/data"
 
 int main(int argc, const char** argv)
 {
     std::cout << "-- activated data folder: " << DATA_PATH << '\n';
     std::cout<<"This is: "<<argv[0]<<'\n';
+
+    //  std::cout<<"newly-added\n";
+    //std::cout<<"data path is: "<<mypath<<'\n';
     
     char buffer[256];
     if (getcwd(buffer, sizeof(buffer)) != NULL) {
