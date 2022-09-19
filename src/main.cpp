@@ -1,12 +1,13 @@
 #include "FileIO.h"
 #include <CGAL/Polyhedron_3.h>
 
-#define DATA_PATH "/home/fengyan/geocfd/data"
+//#define DATA_PATH "/home/fengyan/geocfd/data"
 
 int main(int argc, const char** argv) {
 
     // prompt basic info
     std::cout << "-- activated data folder: " << DATA_PATH << '\n';
+    std::cout<<"test DATA_PATH\n";
     std::cout<<"This is: "<<argv[0]<<'\n';
 
     //-- reading the (original)file with nlohmann json: https://github.com/nlohmann/json  
