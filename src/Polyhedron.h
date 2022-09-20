@@ -46,8 +46,8 @@ public:
 
     // build one polyhedron using vertices and faces from one shell (one building)
     // jhandle: A JsonHandler instance, contains all vertices and solids
-    // index  : index of solids vector, indicating which solid is going to be built
-    static void build_one_polyhedron(const JsonHandler& jhandle, unsigned long index)
+    // index  : index of solids vector, indicating which solid is going to be built - ideally one building just contains one solid
+    static void build_one_polyhedron(const JsonHandler& jhandle, unsigned long index=0)
     {
         const auto& solid = jhandle.solids[index]; // get the solid
         if(solid.shells.size() != 1){

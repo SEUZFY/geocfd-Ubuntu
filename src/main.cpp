@@ -29,10 +29,15 @@ int main(int argc, const char** argv)
    input.close();
 
    //read certain building
-   JsonHandler jhandle;
-   std::string building_id = "NL.IMBAG.Pand.0503100000019695-0";
-   jhandle.read_certain_building(j, building_id);
-   std::cout << "number of vertices: " << jhandle.vertices.size() << '\n';
+   JsonHandler jhandle1;
+   std::string building1_id = "NL.IMBAG.Pand.0503100000019695-0";
+   jhandle1.read_certain_building(j, building1_id);
+   jhandle1.message();
+
+   JsonHandler jhandle2;
+   std::string building2_id = "NL.IMBAG.Pand.0503100000018413-0"; // adjacent to building1
+   jhandle2.read_certain_building(j, building2_id);
+   jhandle2.message();
     
    // // test output
    //
@@ -49,7 +54,8 @@ int main(int argc, const char** argv)
     
 
    // build polyhedron test
-   BuildPolyhedron::build_one_polyhedron(jhandle, 0);
+   BuildPolyhedron::build_one_polyhedron(jhandle1);
+   BuildPolyhedron::build_one_polyhedron(jhandle2);
 
    // write file
    //std::string writeFilename = "/SimpleBuildings.json";

@@ -178,6 +178,20 @@ public:
 	}
 
 
+	
+	/*
+	* prompt basic information of the current building
+	*/
+	void message()
+	{
+		std::cout<<"---------building(part) info----------\n";
+		std::cout<<"building(part) name: "<<solids[0].id<<'\n';
+		std::cout<<"lod level: "<<solids[0].lod<<'\n';
+		std::cout<<"number of vertices: "<<vertices.size()<<'\n';
+		std::cout<<"--------------------------------------\n";
+	}
+	
+	
 	/*
 	* write the selected building to cityjson file
 	* index: index of solids, indicating which solid is going to be written to the json file
