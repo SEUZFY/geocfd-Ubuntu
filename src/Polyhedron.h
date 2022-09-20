@@ -72,6 +72,10 @@ public:
             // call the delegate function
             polyhedron.delegate(polyhedron_builder);
             std::cout<<"polyhedron closed? "<<polyhedron.is_closed()<<'\n';
+            if(polyhedron.is_closed()){
+                Nef_polyhedron nef_polyhedron(polyhedron);
+                std::cout<<"build nef polyhedron"<<'\n';
+            }
         }
        
     }
