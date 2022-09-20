@@ -7,9 +7,7 @@
 #include <string>
 
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
-#include "test.h"
 #include "json.hpp"
-
 
 
 // typedefs
@@ -164,7 +162,7 @@ public:
 										// vertices.back() = Point_3(x, y, z); // add the vertex to the vertices vector
 										// std::cout << v << " (" << x << ", " << y << ", " << z << ")" << '\n';
 										// r.indices.emplace_back((unsigned long)vertices.size()-1); // new indices 0-based
-										
+
 									} // end for: each indice in one ring
 									f.rings.emplace_back(r); // add ring to the surface
 								}// end for: each ring in one surface

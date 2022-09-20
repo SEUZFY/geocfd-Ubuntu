@@ -1,4 +1,4 @@
-#include "JsonHandler.h"
+#include "Polyhedron.h"
 #include <CGAL/Polyhedron_3.h>
 
 //#define DATA_PATH "/home/fengyan/geocfd/data"
@@ -9,8 +9,8 @@ int main(int argc, const char** argv)
    std::cout << "-- activated data folder: " << DATA_PATH << '\n';
    std::cout<<"This is: "<<argv[0]<<'\n';
 
-    //  std::cout<<"newly-added\n";
-    //std::cout<<"data path is: "<<mypath<<'\n';
+   //  std::cout<<"newly-added\n";
+   //std::cout<<"data path is: "<<mypath<<'\n';
     
    //  char buffer[256];
    //  if (getcwd(buffer, sizeof(buffer)) != NULL) {
@@ -34,19 +34,22 @@ int main(int argc, const char** argv)
    jhandle.read_certain_building(j, building_id);
    std::cout << "number of vertices: " << jhandle.vertices.size() << '\n';
     
-    // // test output
-    //
-   std::cout << "vertices number: " << '\n';
-   for (const auto& so : jhandle.solids)
-      for (const auto& se : so.shells)
-         for (const auto& f : se.faces)
-            for (const auto& r : f.rings) // for most cases, each face only contains one ring -> i.e. face [[0,1,2,3]] only has one ring
-               {
-                  std::cout << "--------" << '\n';
-                  for (const auto& indice : r.indices)
-                     std::cout << indice << '\n';
-               }
+   // // test output
+   //
+   // std::cout << "vertices number: " << '\n';
+   // for (const auto& so : jhandle.solids)
+   //    for (const auto& se : so.shells)
+   //       for (const auto& f : se.faces)
+   //          for (const auto& r : f.rings) // for most cases, each face only contains one ring -> i.e. face [[0,1,2,3]] only has one ring
+   //             {
+   //                std::cout << "--------" << '\n';
+   //                for (const auto& indice : r.indices)
+   //                   std::cout << indice << '\n';
+   //             }
     
+
+   // build polyhedron test
+   BuildPolyhedron::build_one_polyhedron(jhandle, 0);
 
    // write file
    std::string writeFilename = "/SimpleBuildings.json";
