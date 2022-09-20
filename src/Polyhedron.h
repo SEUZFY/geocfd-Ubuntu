@@ -47,7 +47,7 @@ public:
     // build one polyhedron using vertices and faces from one shell (one building)
     // jhandle: A JsonHandler instance, contains all vertices and solids
     // index  : index of solids vector, indicating which solid is going to be built - ideally one building just contains one solid
-    static void build_one_polyhedron(const JsonHandler& jhandle, unsigned long index=0)
+    static void build_one_polyhedron(const JsonHandler& jhandle, std::vector<Nef_polyhedron>& Nefs, unsigned long index=0)
     {
         const auto& solid = jhandle.solids[index]; // get the solid
         if(solid.shells.size() != 1){
@@ -74,6 +74,8 @@ public:
             std::cout<<"polyhedron closed? "<<polyhedron.is_closed()<<'\n';
             if(polyhedron.is_closed()){
                 Nef_polyhedron nef_polyhedron(polyhedron);
+                Nefs.emplace_back();
+                Nefs.back() = nef_polyhedron; // add the built nef_polyhedron to the Nefs vector
                 std::cout<<"build nef polyhedron"<<'\n';
             }
         }

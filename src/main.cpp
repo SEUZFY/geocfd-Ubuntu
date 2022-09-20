@@ -53,9 +53,27 @@ int main(int argc, const char** argv)
    //             }
     
 
+   // build a vector to store the nef polyhedra(if built successfully)
+   std::vector<Nef_polyhedron> Nefs;
+
    // build polyhedron test
-   BuildPolyhedron::build_one_polyhedron(jhandle1);
-   BuildPolyhedron::build_one_polyhedron(jhandle2);
+   BuildPolyhedron::build_one_polyhedron(jhandle1, Nefs);
+   BuildPolyhedron::build_one_polyhedron(jhandle2, Nefs);
+
+   // prompt Nefs
+   std::cout<<"there are "<<Nefs.size()<<" Nef polyhedra now\n";
+
+   // check if Nef is simple
+   for(const auto& nef : Nefs)
+      std::cout<<"is nef simple? "<<nef.is_simple()<<'\n';
+
+   // big Nef
+   Nef_polyhedron bigNef;
+   for(const auto& nef : Nefs)
+      bigNef += nef;
+
+   // check if big Nef is simple - simple: no internal rooms, not simple: multiple rooms?
+   std::cout<<"is bigNef simple? "<<bigNef.is_simple()<<'\n';
 
    // write file
    //std::string writeFilename = "/SimpleBuildings.json";
