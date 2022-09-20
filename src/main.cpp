@@ -52,8 +52,8 @@ int main(int argc, const char** argv)
    BuildPolyhedron::build_one_polyhedron(jhandle, 0);
 
    // write file
-   std::string writeFilename = "/SimpleBuildings.json";
-   jhandle.write_json_file(DATA_PATH + writeFilename, 0); // second argument: indicating which solid is going to be written to the file
+   //std::string writeFilename = "/SimpleBuildings.json";
+   //jhandle.write_json_file(DATA_PATH + writeFilename, 0); // second argument: indicating which solid is going to be written to the file
                     
 
 	return 0;
