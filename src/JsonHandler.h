@@ -181,6 +181,7 @@ public:
 	/*
 	* write the selected building to cityjson file
 	* index: index of solids, indicating which solid is going to be written to the json file
+	* this needs to be altered to write the big nef to cityjson
 	*/
 	void write_json_file(const std::string& filename, const std::size_t index)
 	{
