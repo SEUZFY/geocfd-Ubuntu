@@ -82,3 +82,49 @@ public:
        
     }
 };
+
+
+
+// extract geometries
+// guidance: https://3d.bk.tudelft.nl/courses/geo1004//hw/3/#4-extracting-geometries
+// credit: Ken Ohori
+struct Shell_explorer {
+    std::vector<Point_3> vertices;
+    std::vector<std::vector<unsigned long>> faces;
+
+    void visit(Nef_polyhedron::Vertex_const_handle v) {}
+    void visit(Nef_polyhedron::Halfedge_const_handle he) {}
+    void visit(Nef_polyhedron::SHalfedge_const_handle she) {}
+    void visit(Nef_polyhedron::SHalfloop_const_handle shl) {}
+    void visit(Nef_polyhedron::SFace_const_handle sf) {}
+
+    void visit(Nef_polyhedron::Halffacet_const_handle hf) {
+        for (Nef_polyhedron::Halffacet_cycle_const_iterator it = hf->facet_cycles_begin(); it != hf->facet_cycles_end(); it++) {
+            
+            //std::cout << it.is_shalfedge() << " " << it.is_shalfloop() << '\n';
+            Nef_polyhedron::SHalfedge_const_handle she = Nef_polyhedron::SHalfedge_const_handle(it);
+            CGAL_assertion(she != 0);
+            Nef_polyhedron::SHalfedge_around_facet_const_circulator hc_start = she;
+            Nef_polyhedron::SHalfedge_around_facet_const_circulator hc_end = hc_start;
+            //std::cout << "hc_start = hc_end? " << (hc_start == hc_end) << '\n';
+
+            faces.emplace_back();
+            int index = 0;
+            CGAL_For_all(hc_start, hc_end) // each vertex of one halffacet
+            {
+                Nef_polyhedron::SVertex_const_handle svert = hc_start->source();
+                Point_3 vpoint = svert->center_vertex()->point();
+                //std::cout << "v: " << "(" << vpoint.x() << ", " << vpoint.y() << ", " << vpoint.z() << ")" << '\n';
+                vertices.push_back(vpoint);
+                faces.back().push_back(index++); 
+            }
+            //std::cout << '\n';
+         
+        }
+
+    }
+};
+
+
+
+// post process of shell explorers
