@@ -5,7 +5,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
-// #include "json.hpp"
+
 #include <CGAL/Exact_predicates_exact_constructions_kernel.h>
 #include "test.h"
 #include "json.hpp"
@@ -75,7 +75,7 @@ struct Solid
 
 
 // handle cityjson file
-class FileIO
+class JsonHandler
 {
 protected:
 	/*
@@ -143,12 +143,28 @@ public:
 										double x = (vi[0] * j["transform"]["scale"][0].get<double>()) + j["transform"]["translate"][0].get<double>();
 										double y = (vi[1] * j["transform"]["scale"][1].get<double>()) + j["transform"]["translate"][1].get<double>();
 										double z = (vi[2] * j["transform"]["scale"][2].get<double>()) + j["transform"]["translate"][2].get<double>();
-										vertices.emplace_back();
-										vertices.back() = Point_3(x, y, z); // add the vertex to the vertices vector
-										//std::cout << v << " (" << x << ", " << y << ", " << z << ")" << '\n';
-
-										// add ring
-										r.indices.emplace_back((unsigned long)vertices.size()-1); // new indices 0-based
+										
+										// when adding new vertex and adding new index in r.indices, check repeatness
+										Point_3 new_vertex(x, y, z);
+										bool if_existed = vertex_exist_check(vertices, new_vertex);
+										if(!if_existed){
+											vertices.emplace_back();
+											vertices.back() = new_vertex; // if not existed yet, add it to vertices vector
+											r.indices.emplace_back((unsigned long)vertices.size()-1); // add new index to this ring's indices vector
+											// since we add new vertex to vertices, vertices.size()-1 represents the last index
+											// can also do: r.indices.emplace_back(index++);
+										}
+										else{
+											unsigned long exist_index = find_vertex_index(vertices, new_vertex);
+											r.indices.emplace_back();
+											r.indices.back() = exist_index; // if existed, add the exist index to this ring's indices vector
+										}
+										
+										// vertices.emplace_back();
+										// vertices.back() = Point_3(x, y, z); // add the vertex to the vertices vector
+										// std::cout << v << " (" << x << ", " << y << ", " << z << ")" << '\n';
+										// r.indices.emplace_back((unsigned long)vertices.size()-1); // new indices 0-based
+										
 									} // end for: each indice in one ring
 									f.rings.emplace_back(r); // add ring to the surface
 								}// end for: each ring in one surface
