@@ -6,7 +6,27 @@ Process geometry for cfd simulation.
 
 Read two adjacent buildings, process repeated vertices and build two `nef polyhedra`.
 
+Union two nef polyhedra.
+
 `To do`:
+
+- process repeated vertices of the `big nef polyhedron`
+
+- export to `.cityjson` and visualise in ninja
+
+- test more complicated buildings 
+
+  - how much will the shape change?
+  
+  - [3D Minkowski Sum](https://doc.cgal.org/latest/Minkowski_sum_3/index.html#Chapter_3D_Minkowski_Sum_of_Polyhedra) - can we do sum in some specific direction?
+ 
+ `long term`
+ 
+  - robust
+  
+  - `val3dity`  - [validate](http://geovalidation.bk.tudelft.nl/val3dity/) the geometry
+  
+  - `validator` - [validate](https://validator.cityjson.org/) the `cityjson` file
 
 Union two nef polyhedra and output as one building via `.cityjson` file.
 
