@@ -109,11 +109,11 @@ multiple `"${workspaceFolder}/include"`? (if more than one file needs to include
 
 If everything goes right, you can `build` and `run` like so:
 
-1. you can `press` the `build` button in vscode:
+1. you can `press` the `build` button in `vscode`:
 
 ![image](https://user-images.githubusercontent.com/72781910/191454706-5be07145-3276-4488-bd7f-f9d08c954427.png)
 
-2. after the `build`, do the following command in your `ternimal`:
+2. after the `build`, do the following command in your `terminal`:
 
 `cd build` - this command means you enter into geocfd/build folder
 
