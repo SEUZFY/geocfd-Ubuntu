@@ -140,5 +140,5 @@ Then you could see some prompt information in the terminal:
 ![image](https://user-images.githubusercontent.com/72781910/191267583-f2908ce0-d295-4285-8e01-ae2ef9864346.png)
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
-If you use other platforms (such as 'windows' or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
+If you use other platforms (such as `windows` or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
 
