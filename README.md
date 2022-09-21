@@ -109,6 +109,8 @@ multiple `"${workspaceFolder}/include"`? (if more than one file needs to include
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## build and run
+
 If everything goes right, you can `build` and `run` like so:
 
 1. you can `press` the `build` button in vscode:
