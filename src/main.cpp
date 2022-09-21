@@ -28,11 +28,17 @@ int main(int argc, const char** argv)
    input >> j;
    input.close();
 
+
    //read certain building
-   JsonHandler jhandle;
-   std::string building_id = "NL.IMBAG.Pand.0503100000019695-0";
-   jhandle.read_certain_building(j, building_id);
-   std::cout << "number of vertices: " << jhandle.vertices.size() << '\n';
+   JsonHandler jhandle1;
+   std::string building1_id = "NL.IMBAG.Pand.0503100000019695-0";
+   jhandle1.read_certain_building(j, building1_id);
+   jhandle1.message();
+
+   JsonHandler jhandle2;
+   std::string building2_id = "NL.IMBAG.Pand.0503100000018413-0"; // adjacent to building1
+   jhandle2.read_certain_building(j, building2_id);
+   jhandle2.message();
     
    // // test output
    //
@@ -48,12 +54,65 @@ int main(int argc, const char** argv)
    //             }
     
 
+   // build a vector to store the nef polyhedra(if built successfully)
+   std::vector<Nef_polyhedron> Nefs;
+
+
    // build polyhedron test
-   BuildPolyhedron::build_one_polyhedron(jhandle, 0);
+   BuildPolyhedron::build_one_polyhedron(jhandle1, Nefs);
+   BuildPolyhedron::build_one_polyhedron(jhandle2, Nefs);
+
+
+   // prompt Nefs
+   std::cout<<"there are "<<Nefs.size()<<" Nef polyhedra now\n";
+
+
+   // check if Nef is simple
+   for(const auto& nef : Nefs)
+      std::cout<<"is nef simple? "<<nef.is_simple()<<'\n';
+
+
+   // big Nef
+   Nef_polyhedron big_nef;
+   for(const auto& nef : Nefs)
+      big_nef += nef;
+
+
+   // check if big Nef is simple - simple: no internal rooms, not simple: multiple rooms?
+   std::cout<<"is bigNef simple? "<<big_nef.is_simple()<<'\n';
+
+
+   // extract geometries 
+	std::vector<Shell_explorer> shell_explorers;
+	int volume_count = 0;
+	int shell_count = 0;
+	Nef_polyhedron::Volume_const_iterator current_volume;
+	CGAL_forall_volumes(current_volume, big_nef) {
+		std::cout << "volume: " << volume_count++ << " ";
+		std::cout << "volume mark: " << current_volume->mark() << '\n';
+		Nef_polyhedron::Shell_entry_const_iterator current_shell;
+		CGAL_forall_shells_of(current_shell, current_volume) {
+			Shell_explorer se;
+			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
+			big_nef.visit_shell_objects(sface_in_shell, se);
+
+			//add the se to shell_explorers
+			shell_explorers.push_back(se);
+		}
+	}
+	std::cout << "after extracting geometries: " << '\n';
+	std::cout << "shell explorers size: " << shell_explorers.size() << '\n';
+
+   std::cout<<"info for each shell\n";
+   for(const auto& se : shell_explorers){
+      std::cout << "vertices size of this shell: " << se.vertices.size() << '\n';
+		std::cout << "faces size of this shell: " << se.faces.size() << '\n';
+		std::cout << '\n';
+   }
 
    // write file
-   std::string writeFilename = "/SimpleBuildings.json";
-   jhandle.write_json_file(DATA_PATH + writeFilename, 0); // second argument: indicating which solid is going to be written to the file
+   //std::string writeFilename = "/SimpleBuildings.json";
+   //jhandle.write_json_file(DATA_PATH + writeFilename, 0); // second argument: indicating which solid is going to be written to the file
                     
 
 	return 0;
