@@ -28,10 +28,6 @@ Union two nef polyhedra.
   
   - `validator` - [validate](https://validator.cityjson.org/) the `cityjson` file
 
-`To do`:
-
-Union two nef polyhedra and output as one building via `.cityjson` file.
-
 # How to use?
 
 The files are built and executed via `WSL` on a `windows10` platform.
