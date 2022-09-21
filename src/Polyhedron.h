@@ -78,6 +78,9 @@ public:
                 Nefs.back() = nef_polyhedron; // add the built nef_polyhedron to the Nefs vector
                 std::cout<<"build nef polyhedron"<<'\n';
             }
+
+            // visualize a polyhedron?
+            
         }
        
     }

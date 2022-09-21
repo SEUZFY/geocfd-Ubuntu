@@ -114,7 +114,8 @@ int main(int argc, const char** argv)
    // write file
    JsonWriter jwrite;
    std::string writeFilename = "/bignefpolyhedron.json";
-   jwrite.write_json_file(DATA_PATH + writeFilename, big_nef);
+   const Shell_explorer& shell = shell_explorers[1]; // shell which is going to be written to the file
+   jwrite.write_json_file(DATA_PATH + writeFilename, shell);
                     
 
 	return 0;
