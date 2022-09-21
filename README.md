@@ -16,14 +16,26 @@ The files are built and executed via `WSL` on a `windows10` platform.
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+## dependencies
+
+1. `WSL` - check: https://learn.microsoft.com/en-us/windows/wsl/install
+
+2. vscode - installed on the local machine, not installed in `WSL`
+
+3. C++ extension pack - installed in `WSL` NOT locally
+
 If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run:
 
-after `build`, do:
+you can `press` the `build` button in vscode:
 
-```console
-cd build (this command means you enter into geocfd/build folder)
-./geocfd (this command means you execute the geocfd project)
-```
+![image](https://user-images.githubusercontent.com/72781910/191454706-5be07145-3276-4488-bd7f-f9d08c954427.png)
+
+after the `build`, do:
+
+`cd build` - this command means you enter into geocfd/build folder
+
+`./geocfd` - this command means you execute the geocfd project, `geocfd` is the name of the project
+
 for example:
 
 -> build
