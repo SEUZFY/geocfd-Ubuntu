@@ -30,6 +30,8 @@ The files are built and executed via `WSL` on a `windows10` platform.
 
 ## set up the environment(C++ vscode WSL):
 
+https://learn.microsoft.com/en-us/windows/wsl/install - install `WSL` on `windows 10/11`
+
 https://code.visualstudio.com/docs/remote/wsl-tutorial - install remote development in WSL extension
 
 https://code.visualstudio.com/docs/cpp/config-wsl - config C++ environment
@@ -37,6 +39,8 @@ https://code.visualstudio.com/docs/cpp/config-wsl - config C++ environment
 https://code.visualstudio.com/docs/cpp/cmake-linux - cmake in vscode
 
 https://3d.bk.tudelft.nl/courses/geo1004//hw/0/wsl/ - install `CMake`, `CGAL`, `GDAL`, `GDB` in `WSL`
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run:
 
