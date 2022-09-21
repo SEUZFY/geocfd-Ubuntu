@@ -32,8 +32,6 @@ Union two `nef polyhedra` into one `big nef polyhedron`.
 
 The files are built and executed via `WSL` on a `windows10` platform.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 ## dependencies
 
 1. `WSL` - installed on `windows 10 / 11` platform
@@ -43,8 +41,6 @@ The files are built and executed via `WSL` on a `windows10` platform.
 3. `C++ extension pack` - installed in `WSL` NOT locally
 
 4. `CGAL` - installed in `WSL`
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## set up the environment(C++ vscode WSL):
 
@@ -57,8 +53,6 @@ https://code.visualstudio.com/docs/cpp/config-wsl - config C++ environment
 https://code.visualstudio.com/docs/cpp/cmake-linux - cmake in vscode
 
 https://3d.bk.tudelft.nl/courses/geo1004//hw/0/wsl/ - install `CMake`, `CGAL`, `GDAL`, `GDB` in `WSL`
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## issues!
 
@@ -102,8 +96,6 @@ multiple `"${workspaceFolder}/include"`? (if more than one file needs to include
 **3.** **check** - in `CMakeLists.txt` file
 
 `include_directories( ${CMAKE_SOURCE_DIR}/include ) # the file which needs to be included is in the include folder`
-
-------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 ## build and run
 
