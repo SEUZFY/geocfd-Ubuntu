@@ -6,13 +6,13 @@ Process geometry for cfd simulation.
 
 Read two adjacent buildings, process repeated vertices and build two `nef polyhedra`.
 
-Union two nef polyhedra.
+Union two `nef polyhedra` into one `big nef polyhedron`.
 
 `To do`:
 
 - process repeated vertices of the `big nef polyhedron`
 
-- export to `.cityjson` and visualise in ninja
+- export to `.cityjson` file and visualise in [ninja](https://ninja.cityjson.org/)
 
 - test more complicated buildings 
 
