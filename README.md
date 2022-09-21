@@ -6,7 +6,6 @@ Process geometry for cfd simulation.
 
 Read two adjacent buildings, process repeated vertices and build two `nef polyhedra`.
 
->>>>>>> HEAD
 Union two nef polyhedra.
 
 `To do`:
@@ -29,10 +28,8 @@ Union two nef polyhedra.
   
   - `validator` - [validate](https://validator.cityjson.org/) the `cityjson` file
 
-=======
 `To do`:
 
->>>>>>> dev
 Union two nef polyhedra and output as one building via `.cityjson` file.
 
 # How to use?
@@ -41,7 +38,6 @@ The files are built and executed via `WSL` on a `windows10` platform.
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
->>>>>>> HEAD
 ## dependencies
 
 1. `WSL` - check: https://learn.microsoft.com/en-us/windows/wsl/install
@@ -89,7 +85,7 @@ after `build`, do:
 cd build (this command means you enter into geocfd/build folder)
 ./geocfd (this command means you execute the geocfd project)
 ```
->>>>>>> dev
+
 for example:
 
 -> build
