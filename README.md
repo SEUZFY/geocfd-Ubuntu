@@ -22,11 +22,13 @@ Union two `nef polyhedra` into one `big nef polyhedron`.
  
  `long term`
  
-  - robust
+  - `robust`
   
   - `val3dity`  - [validate](http://geovalidation.bk.tudelft.nl/val3dity/) the geometry
   
   - `validator` - [validate](https://validator.cityjson.org/) the `cityjson` file
+  
+  - `#include` - include multiple files, how to avoid possibly messy includings?
 
 # How to use?
 
