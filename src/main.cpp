@@ -1,5 +1,5 @@
-#include "Polyhedron.h"
 #include <CGAL/Polyhedron_3.h>
+#include "JsonWriter.h"
 
 //#define DATA_PATH "/home/fengyan/geocfd/data"
 
@@ -110,9 +110,11 @@ int main(int argc, const char** argv)
 		std::cout << '\n';
    }
 
+   
    // write file
-   //std::string writeFilename = "/SimpleBuildings.json";
-   //jhandle.write_json_file(DATA_PATH + writeFilename, 0); // second argument: indicating which solid is going to be written to the file
+   JsonWriter jwrite;
+   std::string writeFilename = "/bignefpolyhedron.json";
+   jwrite.write_json_file(DATA_PATH + writeFilename, big_nef);
                     
 
 	return 0;
