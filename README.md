@@ -36,7 +36,7 @@ The files are built and executed via `WSL` on a `windows10` platform.
 
 ## dependencies
 
-1. `WSL` - check: https://learn.microsoft.com/en-us/windows/wsl/install
+1. `WSL` - installed on `windows 10 / 11` platform
 
 2. `vscode` - installed on the local machine, not installed in `WSL`
 
