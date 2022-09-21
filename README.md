@@ -44,7 +44,7 @@ The files are built and executed via `WSL` on a `windows10` platform.
 
 2. `vscode` - installed on the local machine, not installed in `WSL`
 
-3. `C++ extension pack` - installed in `WSL` NOT locally, you can check: 
+3. `C++ extension pack` - installed in `WSL` NOT locally
 
 4. `CGAL` - installed in `WSL`
 
@@ -64,27 +64,64 @@ https://3d.bk.tudelft.nl/courses/geo1004//hw/0/wsl/ - install `CMake`, `CGAL`, `
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run:
+## issues!
 
-you can `press` the `build` button in vscode:
+### can I build a new cmake project?
+
+Sure! check this -> https://code.visualstudio.com/docs/cpp/cmake-linux
+
+### not recognizing header files?
+
+**1.** **check** - in `c_cpp_properties.json` file (compiler path and IntelliSense settings), add `include path`
+
+`include` - where the header(which needs to be included) file is
+
+```json
+"includePath": [
+                "${workspaceFolder}/**",
+                "${workspaceFolder}/include",
+                "${workspaceFolder}/include"
+            ],
+```
+
+multiple `"${workspaceFolder}/include"`? (if more than one file needs to include)
+
+**2.** **check** - in `tasks.json` file, add 
+
+```json
+"-I${workspaceFolder}/include"
+```
+
+```json
+"args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-I${workspaceFolder}/include",
+                "${workspaceFolder}/src/*.cpp",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+```
+
+**3.** **check** - in `CMakeLists.txt` file
+
+`include_directories( ${CMAKE_SOURCE_DIR}/include ) # the file which needs to be included is in the include folder`
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+If everything goes right, you can `build` and `run` like so:
+
+1. you can `press` the `build` button in vscode:
 
 ![image](https://user-images.githubusercontent.com/72781910/191454706-5be07145-3276-4488-bd7f-f9d08c954427.png)
 
-after the `build`, do:
+2. after the `build`, do the following command in your `ternimal`:
 
 `cd build` - this command means you enter into geocfd/build folder
 
 `./geocfd` - this command means you execute the geocfd project, `geocfd` is the name of the project
 
-=======
-If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run:
-
-after `build`, do:
-
-```console
-cd build (this command means you enter into geocfd/build folder)
-./geocfd (this command means you execute the geocfd project)
-```
+------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 for example:
 
