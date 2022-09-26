@@ -67,9 +67,17 @@ int main(int argc, const char** argv)
    std::cout<<"there are "<<Nefs.size()<<" Nef polyhedra now\n";
 
 
-   // check if Nef is simple
+   // check if Nef is simple and convert it to polyhedron 3 for visualise
    for(const auto& nef : Nefs)
+   {
       std::cout<<"is nef simple? "<<nef.is_simple()<<'\n';
+      if(nef.is_simple())
+      {
+         Polyhedron p;
+         nef.convert_to_Polyhedron(p);
+         std::cout<<p;
+      }
+   }
 
 
    // big Nef
@@ -87,14 +95,14 @@ int main(int argc, const char** argv)
 	int volume_count = 0;
 	int shell_count = 0;
 	Nef_polyhedron::Volume_const_iterator current_volume;
-	CGAL_forall_volumes(current_volume, big_nef) {
+	CGAL_forall_volumes(current_volume, Nefs[0]) { // use Nefs[0] to replace the big_nef
 		std::cout << "volume: " << volume_count++ << " ";
 		std::cout << "volume mark: " << current_volume->mark() << '\n';
 		Nef_polyhedron::Shell_entry_const_iterator current_shell;
 		CGAL_forall_shells_of(current_shell, current_volume) {
 			Shell_explorer se;
 			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
-			big_nef.visit_shell_objects(sface_in_shell, se);
+			Nefs[0].visit_shell_objects(sface_in_shell, se); // use Nefs[0] to replace the big_nef
 
 			//add the se to shell_explorers
 			shell_explorers.push_back(se);

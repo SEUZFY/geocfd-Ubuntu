@@ -11,8 +11,10 @@
 #include <CGAL/minkowski_sum_3.h>
 
 // typedefs
-typedef CGAL::Polyhedron_3<Kernel> Polyhedron;
-typedef CGAL::Nef_polyhedron_3<Kernel> Nef_polyhedron;
+typedef CGAL::Polyhedron_3<Kernel>                   Polyhedron;
+typedef CGAL::Nef_polyhedron_3<Kernel>               Nef_polyhedron;
+typedef Polyhedron::Facet_iterator                   Facet_iterator;
+typedef Polyhedron::Halfedge_around_facet_circulator Halfedge_facet_circulator;
 
 
 /*
@@ -72,6 +74,32 @@ public:
             // call the delegate function
             polyhedron.delegate(polyhedron_builder);
             std::cout<<"polyhedron closed? "<<polyhedron.is_closed()<<'\n';
+
+
+            /* test to write the polyhedron to .off file --------------------------------------------------------*/
+            
+            // Write polyhedron in Object File Format (OFF).
+            // CGAL::set_ascii_mode(std::cout);
+            // std::cout << "OFF" << std::endl << polyhedron.size_of_vertices() << ' '
+            //     << polyhedron.size_of_facets() << " 0" << std::endl;
+            // std::copy(polyhedron.points_begin(), polyhedron.points_end(),
+            //     std::ostream_iterator<Point_3>( std::cout, "\n"));
+            // for (Facet_iterator i = polyhedron.facets_begin(); i != polyhedron.facets_end(); ++i) 
+            // {
+            //     Halfedge_facet_circulator j = i->facet_begin();
+            //     // Facets in polyhedral surfaces are at least triangles.
+            //     std::cout << CGAL::circulator_size(j) << ' ';
+            //     do {
+            //         std::cout << ' ' << std::distance(polyhedron.vertices_begin(), j->vertex());
+            //     } while ( ++j != i->facet_begin());
+            //     std::cout << std::endl;
+            // }
+
+            std::cout<<polyhedron<<std::endl;
+
+            /* test to write the polyhedron to .off file --------------------------------------------------------*/
+
+
             if(polyhedron.is_closed()){
                 Nef_polyhedron nef_polyhedron(polyhedron);
                 Nefs.emplace_back();
