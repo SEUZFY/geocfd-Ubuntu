@@ -129,7 +129,7 @@ multiple `"${workspaceFolder}/include"`? (if more than one file needs to include
 
 `include_directories( ${CMAKE_SOURCE_DIR}/include ) # the file which needs to be included is in the include folder`
 
-# Other platforms
+## Other platforms
 
 If you use other platforms (such as `windows`, `Linux` or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
 
