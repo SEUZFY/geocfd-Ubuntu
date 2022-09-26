@@ -19,7 +19,7 @@ public:
 	* all_vertices: contains all vertices from All shells, not just from one shell
 	* shell       : shell which is going to be written to the json file
 	*/
-	void write_json_file(const std::string& filename, const std::vector<Point_3>& all_vertices, const Shell_explorer& shell)
+	void write_json_file(const std::string& filename, const Shell_explorer& shell)
 	{
 		// basic info ---------------------------------------------------------------
 		json js;
@@ -30,8 +30,8 @@ public:
 		js["transform"]["translate"] = json::array({ 0.0, 0.0, 0.0 });
 		js["vertices"] = json::array({}); // vertices
 
-		// all vertices(including repeated vertices)-----------------------------------		
-		for (auto const& v : all_vertices) {
+		// cleaned vertices ---------------------------------------------------------		
+		for (auto const& v : shell.cleaned_vertices) {
 			double x = CGAL::to_double(v.x()); // warning: may have precision loss
 			double y = CGAL::to_double(v.y());
 			double z = CGAL::to_double(v.z());
@@ -62,8 +62,8 @@ public:
 
 		// boundaries
 		auto& boundaries = js["CityObjects"][bp_name]["geometry"][0]["boundaries"][0];
-        for(auto const& face : shell.faces)
-            boundaries.push_back({ face }); // shell.faces: [[0,1,2,3]], face: [0,1,2,3]
+        for(auto const& face : shell.cleaned_faces)
+            boundaries.push_back({ face }); // i.e. shell.cleaned_faces: [[0,1,2,3]], face: [0,1,2,3]
 	
 		// write to file
 		std::string json_string = js.dump(2);

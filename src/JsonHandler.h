@@ -111,13 +111,6 @@ protected:
 		return 0;
 	}
 
-
-
-	/*
-	* friend class: WriteFile, for accessing vertex_exist_check() and friend_vertex_index() function
-	*/
-	friend class WriteFile;
-
 public:
 	/* 
 	* CityJSON files have their vertices compressed : https://www.cityjson.org/specs/1.1.1/#transform-object
