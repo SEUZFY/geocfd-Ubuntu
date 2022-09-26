@@ -14,11 +14,9 @@ Union two nef polyhedra and output as one building via `.cityjson` file.
 
 The files are built and executed via `WSL` on a `windows10` platform.
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run.
 
-## compile & run
+## compile & run in WSL-Ubuntu
 you can choose to download the code, and:
 ```console
 $ mkdir build
@@ -31,6 +29,7 @@ After successful compilation, run:
 for example:
 
 ```console
+username@LAPTOP-4OG0PACK:~/geocfd$ mkdir build
 username@LAPTOP-4OG0PACK:~/geocfd$ cd build
 username@LAPTOP-4OG0PACK:~/geocfd/build$ cmake ..
 -- Using header-only CGAL
@@ -57,6 +56,5 @@ username@LAPTOP-4OG0PACK:~/geocfd/build$ ./geocfd
 content from the project
 ```
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------
-If you use other platforms (such as 'windows' or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
+If you use other platforms (such as `windows`, `Linux` or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
 
