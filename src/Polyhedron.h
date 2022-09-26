@@ -140,7 +140,7 @@ struct Shell_explorer {
             //std::cout << "hc_start = hc_end? " << (hc_start == hc_end) << '\n';
 
             faces.emplace_back();
-            int index = 0;
+            unsigned long index = 0;
             CGAL_For_all(hc_start, hc_end) // each vertex of one halffacet
             {
                 Nef_polyhedron::SVertex_const_handle svert = hc_start->source();

@@ -14,8 +14,12 @@ public:
 	* write the selected building to cityjson file
 	* index: index of solids, indicating which solid is going to be written to the json file
 	* this needs to be altered to write the big nef to cityjson
+	*
+	* @param:
+	* all_vertices: contains all vertices from All shells, not just from one shell
+	* shell       : shell which is going to be written to the json file
 	*/
-	void write_json_file(const std::string& filename, const Shell_explorer& shell)
+	void write_json_file(const std::string& filename, const std::vector<Point_3>& all_vertices, const Shell_explorer& shell)
 	{
 		// basic info ---------------------------------------------------------------
 		json js;
@@ -27,7 +31,7 @@ public:
 		js["vertices"] = json::array({}); // vertices
 
 		// all vertices(including repeated vertices)-----------------------------------		
-		for (auto const& v : shell.vertices) {
+		for (auto const& v : all_vertices) {
 			double x = CGAL::to_double(v.x()); // warning: may have precision loss
 			double y = CGAL::to_double(v.y());
 			double z = CGAL::to_double(v.z());
