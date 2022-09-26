@@ -89,20 +89,34 @@ int main(int argc, const char** argv)
    // check if big Nef is simple - simple: no internal rooms, not simple: multiple rooms?
    std::cout<<"is bigNef simple? "<<big_nef.is_simple()<<'\n';
 
+   /* test extracting geometries of a nef: use a simple polyhedron */
+   Point_3 p( 1.0, 0.0, 0.0);
+   Point_3 q( 0.0, 1.0, 0.0);
+   Point_3 r( 0.0, 0.0, 1.0);
+   Point_3 s( 0.0, 0.0, 0.0);
+   Polyhedron P;
+   P.make_tetrahedron( p, q, r, s);
+   std::cout<<"testing polyhedron\n";
+   std::cout<<P;
 
+   Nef_polyhedron test_nef(P);
+   std::cout<<"build test nef"<<'\n';
+   
+   /* test extracting geometries of a nef: use a simple polyhedron */
+   
    // extract geometries 
 	std::vector<Shell_explorer> shell_explorers;
 	int volume_count = 0;
 	int shell_count = 0;
 	Nef_polyhedron::Volume_const_iterator current_volume;
-	CGAL_forall_volumes(current_volume, Nefs[0]) { // use Nefs[0] to replace the big_nef
+	CGAL_forall_volumes(current_volume, test_nef) { // use test_nef to replace the big_nef
 		std::cout << "volume: " << volume_count++ << " ";
 		std::cout << "volume mark: " << current_volume->mark() << '\n';
 		Nef_polyhedron::Shell_entry_const_iterator current_shell;
 		CGAL_forall_shells_of(current_shell, current_volume) {
 			Shell_explorer se;
 			Nef_polyhedron::SFace_const_handle sface_in_shell(current_shell);
-			Nefs[0].visit_shell_objects(sface_in_shell, se); // use Nefs[0] to replace the big_nef
+			test_nef.visit_shell_objects(sface_in_shell, se); // use test_nef to replace the big_nef
 
 			//add the se to shell_explorers
 			shell_explorers.push_back(se);
@@ -118,13 +132,42 @@ int main(int argc, const char** argv)
 		std::cout << '\n';
    }
 
-   
-   // write file
-   JsonWriter jwrite;
-   std::string writeFilename = "/bignefpolyhedron.json";
-   const Shell_explorer& shell = shell_explorers[1]; // shell which is going to be written to the file
-   jwrite.write_json_file(DATA_PATH + writeFilename, shell);
-                    
 
+   /* test geometries for test_nef */
+   std::cout<<"output geometries of test_nef"<<'\n';
+   const auto& test_se = shell_explorers[0];
+   for(const auto& v : test_se.vertices)
+      std::cout<<v.x()<<" "<<v.y()<<" "<<v.z()<<'\n';
+   for(const auto& face : test_se.faces)
+      for(const auto& index : face)
+         std::cout<<index<<" ";
+      std::cout<<'\n';
+
+   /* the problem is located in extracting geometries */
+
+
+   /* get a test shell and test if there's any problem in outputing function */
+   Shell_explorer my_se;
+   my_se.vertices.emplace_back(Point_3(0,0,0));
+   my_se.vertices.emplace_back(Point_3(0,0,1));
+   my_se.vertices.emplace_back(Point_3(0,1,0));
+   my_se.vertices.emplace_back(Point_3(1,0,0));
+
+   my_se.faces.emplace_back();
+   my_se.faces.back() = {3,2,1};
+   my_se.faces.emplace_back();
+   my_se.faces.back() = {0,3,1};
+   my_se.faces.emplace_back();
+   my_se.faces.back() = {0,2,3};
+   my_se.faces.emplace_back();
+   my_se.faces.back() = {0,1,2};
+   /* get a test shell and test if there's any problem in outputing function */
+
+   // write file
+   //JsonWriter jwrite;
+   //std::string writeFilename = "/bignefpolyhedron.json";
+   //const Shell_explorer& shell = my_se; // which shell is going to be written to the file
+   //jwrite.write_json_file(DATA_PATH + writeFilename, shell);
+                    
 	return 0;
 }
