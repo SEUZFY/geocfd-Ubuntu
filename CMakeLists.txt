@@ -14,6 +14,11 @@ else()
 	return()
 endif()
 
+# find_package(CGAL COMPONENTS Qt5)
+# if(CGAL_Qt5_FOUND)
+# 	message(STATUS "CGAL_Qt5 found")
+# endif()
+
 include(CTest)
 enable_testing()
 
@@ -22,7 +27,13 @@ add_definitions(
   -DDATA_PATH=\"${PROJECT_SOURCE_DIR}/data\"
 )
 
+# for CGAL_Qt5 
+# add_definitions(-DCGAL_USE_BASIC_VIEWER)
+
 add_executable(geocfd src/main.cpp)
+
+# target_link_libraries(geocfd PUBLIC CGAL::CGAL_Qt5) # for CGAL_Qt5
+# target_link_libraries(geocfd PUBLIC CGAL::CGAL_Qt5)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
