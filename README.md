@@ -30,7 +30,7 @@ Process geometry for cfd simulation.
   
   - `#include` - include multiple files, how to avoid possibly messy includings?
 
-# Dependencies
+## Dependencies
 
 [CGAL](https://www.cgal.org/) - The version should be above `5.0` since we can use the `header-only`, which means we don't have to manually compile `CGAL`.
 
@@ -41,7 +41,7 @@ sudo apt-get update
 sudo apt-get install libcgal-dev
 ```
 
-# How to use?
+## How to use?
 
 The files are built and executed via `WSL-Ubuntu` on a `windows10` platform.
 
@@ -86,7 +86,7 @@ Consolidate compiler generated dependencies of target geocfd
 username@LAPTOP-4OG0PACK:~/geocfd/build$ ./geocfd
 content from the project
 ```
-## issues (if you are using vscode)!
+## possible issues (if you are using vscode)
 
 ### can I build a new cmake project?
 
