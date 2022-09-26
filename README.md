@@ -16,27 +16,46 @@ The files are built and executed via `WSL` on a `windows10` platform.
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run:
+If you have `WSL` and `vscode`(with C++ extension installed on WSL), just clone this project and open it in `vscode`, you should be able to build and run.
 
-after `build`, do:
-
+## compile & run
+you can choose to download the code, and:
 ```console
-cd build (this command means you enter into geocfd/build folder)
-./geocfd (this command means you execute the geocfd project)
+$ mkdir build
+$ cd build
+$ cmake -DCMAKE_BUILD_TYPE=Release .. # or just cmake ..
+$ make
 ```
+After successful compilation, run:
+`$ ./geocfd`
 for example:
 
--> build
-
-![image](https://user-images.githubusercontent.com/72781910/191267077-34bac47c-954f-4e0e-9397-194cae06594c.png)
-
--> execute(in the terminal)
-
-![image](https://user-images.githubusercontent.com/72781910/191267218-2a77ef4e-a575-4288-9ce4-69a2f412709d.png)
-
-Then you could see some prompt information in the terminal:
-
-![image](https://user-images.githubusercontent.com/72781910/191267583-f2908ce0-d295-4285-8e01-ae2ef9864346.png)
+```console
+username@LAPTOP-4OG0PACK:~/geocfd$ cd build
+username@LAPTOP-4OG0PACK:~/geocfd/build$ cmake ..
+-- Using header-only CGAL
+-- Targetting Unix Makefiles
+-- Using /usr/bin/g++ compiler.
+-- Boost include dirs: /usr/include
+-- Boost libraries:    
+-- Using gcc version 4 or later. Adding -frounding-math
+-- Build type: Release
+-- USING CXXFLAGS = ' -O3 -DNDEBUG'
+-- USING EXEFLAGS = ' '
+-- Requested component: MPFR
+-- Requested component: GMP
+-- CGAL found
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/fengyan/geocfd/build
+username@LAPTOP-4OG0PACK:~/geocfd/build$ make
+Consolidate compiler generated dependencies of target geocfd
+[ 50%] Building CXX object CMakeFiles/geocfd.dir/src/main.cpp.o
+[100%] Linking CXX executable geocfd
+[100%] Built target geocfd
+username@LAPTOP-4OG0PACK:~/geocfd/build$ ./geocfd
+content from the project
+```
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------
 If you use other platforms (such as 'windows' or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
