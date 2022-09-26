@@ -129,5 +129,19 @@ multiple `"${workspaceFolder}/include"`? (if more than one file needs to include
 
 `include_directories( ${CMAKE_SOURCE_DIR}/include ) # the file which needs to be included is in the include folder`
 
+## Other platforms
+
 If you use other platforms (such as `windows`, `Linux` or `MacOS`), you can refer to `CMakeLists.txt` file and use it to build a `CMake` project using `src`, `include` and `data` folder.
+
+## useful links when using vscode and C++ in WSL
+https://learn.microsoft.com/en-us/windows/wsl/install - install `WSL` on `windows 10/11`
+
+https://code.visualstudio.com/docs/remote/wsl-tutorial - install remote development in WSL extension
+
+https://code.visualstudio.com/docs/cpp/config-wsl - config C++ environment
+
+https://code.visualstudio.com/docs/cpp/cmake-linux - cmake in vscode
+
+https://3d.bk.tudelft.nl/courses/geo1004//hw/0/wsl/ - install `CMake`, `CGAL`, `GDAL`, `GDB` in `WSL`
+
 
