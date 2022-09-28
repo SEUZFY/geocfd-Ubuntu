@@ -1,6 +1,6 @@
-# geocfd
+# geocfd - Ubuntu
 
-Process geometry for cfd simulation.
+Process geometry for cfd simulation. It's built and run on `WSL - Ubuntu` system.
 
 `Now`:
 
