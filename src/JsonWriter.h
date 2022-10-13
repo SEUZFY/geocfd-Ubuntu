@@ -1,11 +1,14 @@
 #pragma once
 
+
 #include "JsonHandler.h"
 #include "Polyhedron.h"
 
 
 /*
 * class for writing big nef_polyhedron to cityjson file
+* 
+* add different LoDs?
 */
 class JsonWriter : public JsonHandler
 {
@@ -18,8 +21,9 @@ public:
 	* @param:
 	* all_vertices: contains all vertices from All shells, not just from one shell
 	* shell       : shell which is going to be written to the json file
+	* lod         : lod level(1.2 1.3 2.2)
 	*/
-	void write_json_file(const std::string& filename, const Shell_explorer& shell)
+	void write_json_file(const std::string& filename, const Shell_explorer& shell, double lod)
 	{
 		// basic info ---------------------------------------------------------------
 		json js;
@@ -57,14 +61,27 @@ public:
 		// geometry
 		js["CityObjects"][bp_name]["geometry"] = json::array();
 		js["CityObjects"][bp_name]["geometry"][0]["type"] = "Solid";
-		js["CityObjects"][bp_name]["geometry"][0]["lod"] = "1.3"; // lod must be string, otherwise invalid file
+
+		if (abs(lod - 1.2) < epsilon) {
+			js["CityObjects"][bp_name]["geometry"][0]["lod"] = "1.2"; // lod must be string, otherwise invalid file
+		}
+		else if (abs(lod - 1.3) < epsilon) {
+			js["CityObjects"][bp_name]["geometry"][0]["lod"] = "1.3"; // lod must be string, otherwise invalid file
+		}
+		else if (abs(lod - 2.2) < epsilon) {
+			js["CityObjects"][bp_name]["geometry"][0]["lod"] = "2.2"; // lod must be string, otherwise invalid file
+		}
+		else {
+			std::cerr << "lod level incorrect, please check write_json_file() function in JsonWriter.hpp\n";
+		}
+			
 		js["CityObjects"][bp_name]["geometry"][0]["boundaries"] = json::array({}); // indices	
 
 		// boundaries
 		auto& boundaries = js["CityObjects"][bp_name]["geometry"][0]["boundaries"][0];
-        for(auto const& face : shell.cleaned_faces)
-            boundaries.push_back({ face }); // i.e. shell.cleaned_faces: [[0,1,2,3]], face: [0,1,2,3]
-	
+		for (auto const& face : shell.cleaned_faces)
+			boundaries.push_back({ face }); // i.e. shell.cleaned_faces: [[0,1,2,3]], face: [0,1,2,3]
+
 		// write to file
 		std::string json_string = js.dump(2);
 		std::ofstream out_stream(filename);
