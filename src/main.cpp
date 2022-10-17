@@ -2,6 +2,7 @@
 #include "JsonWriter.h"
 #include <CGAL/boost/graph/helpers.h>
 #include "Polyhedron.h" 
+#include <CGAL/OFF_to_nef_3.h>
 // #include <CGAL/boost/graph/IO/STL.h
 typedef Nef_polyhedron::Aff_transformation_3  Aff_transformation_3;
 Nef_polyhedron minkowski_sum_custom(Nef_polyhedron&, double);
@@ -162,6 +163,7 @@ int main(int argc, const char** argv)
 #ifdef _ENABLE_MINKOWSKI_SUM_
 	// minkowski_sum_3 -> add a "buffer" for each nef in Nefs
 	std::cout << "performing minkowski sum...\n";
+	// Nef_polyhedron original_big_nef; 
 	Nef_polyhedron merged_big_nef; 
 	double mink_value = 0.2;
 
@@ -169,30 +171,83 @@ int main(int argc, const char** argv)
 	{
 		Nef_polyhedron merged_nef = minkowski_sum_custom(nef, mink_value); // cube size is 1.0 by default, can be altered
 		merged_big_nef += merged_nef;
+		// original_big_nef += nef;
 	}
 	std::cout << "performing minkowski sum done\n";
 
 	// erode Nef back to original building (credits to Hugo Ledoux)
 	Nef_polyhedron* merged_nef_pointer = &merged_big_nef;
-	Nef_polyhedron output;
+
+	Nef_polyhedron* output;
   	Nef_polyhedron* bbox = get_aabb(merged_nef_pointer);
   	Nef_polyhedron complement = *bbox - *merged_nef_pointer;
   	Nef_polyhedron tmp = minkowski_sum_custom(complement, mink_value);
-  	output = merged_big_nef - tmp;
-  	// output->regularization();
+  	*output = *merged_nef_pointer - tmp;
+	// Fengyan: please try running with regularization enabled to see if it prevents loss of faces
+	// output->regularization();
 
 	// process the merged big nef to make it available for output
 	std::vector<Shell_explorer> merged_shell_explorers;
-	NefProcessing::extract_nef_geometries(output, merged_shell_explorers);
+	NefProcessing::extract_nef_geometries(*output, merged_shell_explorers);
 	NefProcessing::process_shells_for_cityjson(merged_shell_explorers);
+
+	// // process the bbox nef to make it available for output
+	// std::vector<Shell_explorer> bbox_shell_explorers;
+	// NefProcessing::extract_nef_geometries(*bbox, bbox_shell_explorers);
+	// NefProcessing::process_shells_for_cityjson(bbox_shell_explorers);
+
+	// // process the complement nef to make it available for output
+	// std::vector<Shell_explorer> complement_shell_explorers;
+	// NefProcessing::extract_nef_geometries(complement, complement_shell_explorers);
+	// NefProcessing::process_shells_for_cityjson(complement_shell_explorers);
+
+	// // process the complement nef with mink to make it available for output
+	// std::vector<Shell_explorer> complement_mink_shell_explorers;
+	// NefProcessing::extract_nef_geometries(tmp, complement_mink_shell_explorers);
+	// NefProcessing::process_shells_for_cityjson(complement_mink_shell_explorers);
+
+	// std::vector<Shell_explorer> original_shell_explorers;
+	// NefProcessing::extract_nef_geometries(merged_big_nef, original_shell_explorers);
+	// NefProcessing::process_shells_for_cityjson(original_shell_explorers);
 #endif
 
+	// // write file json original geometry
+	// JsonWriter jwrite_original;
+	// std::string writeFilename_original = "/original.city.json";
+	// // const Shell_explorer& shell = shell_explorers[0]; // which shell is going to be written to the file, 0 - exterior, 1 - interior
+	// const Shell_explorer& shell_original = original_shell_explorers[1]; // enable this instead when using MINK
+	// std::cout << "writing the result to cityjson file...\n";
+	// jwrite_original.write_json_file(DATA_PATH + writeFilename_original, shell_original, lod);
+
+	// // write file json bbox
+	// JsonWriter jwrite_bbox;
+	// std::string writeFilename_bbox= "/bbox.city.json";
+	// // const Shell_explorer& shell = shell_explorers[0]; // which shell is going to be written to the file, 0 - exterior, 1 - interior
+	// const Shell_explorer& shell_bbox = bbox_shell_explorers[0]; // enable this instead when using MINK
+	// std::cout << "writing the result to cityjson file...\n";
+	// jwrite_bbox.write_json_file(DATA_PATH + writeFilename_bbox, shell_bbox, lod);
+
+	// // write file json complement
+	// JsonWriter jwrite_complement;
+	// std::string writeFilename_complement= "/complement.city.json";
+	// // const Shell_explorer& shell = shell_explorers[0]; // which shell is going to be written to the file, 0 - exterior, 1 - interior
+	// const Shell_explorer& shell_complement = complement_shell_explorers[0]; // enable this instead when using MINK
+	// std::cout << "writing the result to cityjson file...\n";
+	// jwrite_complement.write_json_file(DATA_PATH + writeFilename_complement, shell_complement, lod);
+
+	// // write file json complement + mink
+	// JsonWriter jwrite_complement_mink;
+	// std::string writeFilename_complement_mink= "/complement_mink.city.json";
+	// // const Shell_explorer& shell = shell_explorers[0]; // which shell is going to be written to the file, 0 - exterior, 1 - interior
+	// const Shell_explorer& shell_complement_mink = complement_mink_shell_explorers[1]; // enable this instead when using MINK
+	// std::cout << "writing the result to cityjson file...\n";
+	// jwrite_complement_mink.write_json_file(DATA_PATH + writeFilename_complement_mink, shell_complement_mink, lod);
 
     // write file json
 	JsonWriter jwrite;
-	std::string writeFilename = "/eroded.city.json";
+	std::string writeFilename = "/eroded-exterior.city.json";
 	// const Shell_explorer& shell = shell_explorers[0]; // which shell is going to be written to the file, 0 - exterior, 1 - interior
-	const Shell_explorer& shell = merged_shell_explorers[1]; // enable this instead when using MINK
+	const Shell_explorer& shell = merged_shell_explorers[0]; // enable this instead when using MINK
 	std::cout << "writing the result to cityjson file...\n";
 	jwrite.write_json_file(DATA_PATH + writeFilename, shell, lod);
 
@@ -240,12 +295,12 @@ Nef_polyhedron* get_aabb(Nef_polyhedron* mynef)
       zmax = CGAL::to_double(v->point().z());
   }
    //-- expand the bbox by 10units
-  xmin -= 10;
-  ymin -= 10;
-  zmin -= 10;
-  xmax += 10;
-  ymax += 10;
-  zmax += 10;
+  xmin -= 50;
+  ymin -= 50;
+  zmin -= 50;
+  xmax += 50;
+  ymax += 50;
+  zmax += 50;
   //-- write an OFF file and convert Nef, simplest (and fastest?) solution
   std::stringstream ss;
   ss << "OFF" << std::endl
@@ -265,6 +320,6 @@ Nef_polyhedron* get_aabb(Nef_polyhedron* mynef)
      << "4 0 4 7 3"    << std::endl
      << "4 4 5 6 7"    << std::endl;
   Nef_polyhedron* nefbbox = new Nef_polyhedron;
-//   CGAL::OFF_to_nef_3(ss, *nefbbox);
+  CGAL::OFF_to_nef_3(ss, *nefbbox);
   return nefbbox;
 }
