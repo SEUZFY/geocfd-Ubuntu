@@ -10,12 +10,21 @@
 #include <CGAL/convex_hull_3.h>
 #include <CGAL/minkowski_sum_3.h>
 
+#include <CGAL/boost/graph/graph_traits_Polyhedron_3.h> // for filling holes
+#include <CGAL/Polygon_mesh_processing/triangulate_faces.h> // for triangulating surfaces
+#include <CGAL/Polygon_mesh_processing/triangulate_hole.h> // for filling holes
+#include <boost/foreach.hpp> // for filling holes
+#include <CGAL/OFF_to_nef_3.h> // for erosion - constructing bbox
+
+
 // typedefs
 typedef CGAL::Polyhedron_3<Kernel>                   Polyhedron;
 typedef CGAL::Nef_polyhedron_3<Kernel>               Nef_polyhedron;
 typedef Polyhedron::Facet_iterator                   Facet_iterator;
 typedef Polyhedron::Halfedge_around_facet_circulator Halfedge_facet_circulator;
-
+typedef Polyhedron::Halfedge_handle                  Halfedge_handle; // for filling holes
+typedef Polyhedron::Facet_handle                     Facet_handle; // for filling holes
+typedef Polyhedron::Vertex_handle                    Vertex_handle; // for filling holes
 
 /*
 load each building(or solid) into a CGAL Polyhedron_3 using the Polyhedron_incremental_builder_3.
@@ -42,18 +51,23 @@ struct Polyhedron_builder : public CGAL::Modifier_base<HDS> {
 /*
 use CGAL to build polyhedron
 */
-class BuildPolyhedron
+class Build
 {
 public:
 
     // build one polyhedron using vertices and faces from one shell (one building)
     // jhandle: A JsonHandler instance, contains all vertices and solids
     // index  : index of solids vector, indicating which solid is going to be built - ideally one building just contains one solid
-    static void build_nef_polyhedron(const JsonHandler& jhandle, std::vector<Nef_polyhedron>& Nefs, unsigned long index = 0)
+    // triangulate: if true, triangulation of surfaces will be performed before building nef
+    static void build_nef_polyhedron(
+        const JsonHandler& jhandle, 
+        std::vector<Nef_polyhedron>& Nefs,
+        bool triangulate = true,
+        unsigned long index = 0)
     {
         const auto& solid = jhandle.solids[index]; // get the solid
 
-        std::cout << "building: " << solid.id << '\n';
+        //std::cout << solid.id << '\n';
 
         if (solid.shells.size() != 1) {
             std::cout << "warning: this solid contains 0 or more than one shells\n";
@@ -79,18 +93,33 @@ public:
             //std::cout << "polyhedron closed? " << polyhedron.is_closed() << '\n';
 
             if (polyhedron.is_closed()) {
+
+                // if triangulation is true, triangulate the surfaces first (lod2.2)
+                if (triangulate) {
+                    CGAL::Polygon_mesh_processing::triangulate_faces(polyhedron);
+                }
+
+                // build nef polyhedron
                 Nef_polyhedron nef_polyhedron(polyhedron);
                 Nefs.emplace_back();
                 Nefs.back() = nef_polyhedron; // add the built nef_polyhedron to the Nefs vector
-                std::cout << "the polyhedron is closed, build nef polyhedron" << '\n';
+                std::cout << "build nef polyhedron" << '\n';
             }
             else {
-                std::cout << "the polyhedron is not closed, build convex hull to replace it\n";
+                std::cout << "the polyhedron is not closed, build convex hull to replace it" << '\n';
+                std::cout << "building id: " << solid.id << '\n';
                 Polyhedron convex_polyhedron;
                 CGAL::convex_hull_3(jhandle.vertices.begin(), jhandle.vertices.end(), convex_polyhedron);
 
                 // now check if we successfully build the convex hull
                 if (convex_polyhedron.is_closed()) {
+
+                    // if triangulation is true, triangulate the surfaces first (lod2.2)
+                    if (triangulate) {
+                        CGAL::Polygon_mesh_processing::triangulate_faces(convex_polyhedron);
+                    }
+
+                    // get nef polyhedron of the convex hull
                     Nef_polyhedron convex_nef_polyhedron(convex_polyhedron);
                     Nefs.emplace_back();
                     Nefs.back() = convex_nef_polyhedron;
@@ -130,6 +159,46 @@ public:
         }
 
     }
+
+
+//     /*
+//     * test hole filling package
+//     */
+//     static void polyhedron_hole_filling(Polyhedron& poly) {
+
+//         // output it
+//         std::ofstream out("unfilled.off");
+//         out.precision(17);
+//         out << poly << std::endl;
+        
+//         // Incrementally fill the holes
+//         std::cout << "filling holes ..." << '\n';
+//         unsigned int nb_holes = 0;
+//         BOOST_FOREACH(Halfedge_handle h, halfedges(poly))
+//         {
+//             if (h->is_border())
+//             {
+//                 std::vector<Facet_handle>  patch_facets;
+//                 std::vector<Vertex_handle> patch_vertices;
+//                 bool success = CGAL::cpp11::get<0>(
+//                     CGAL::Polygon_mesh_processing::triangulate_refine_and_fair_hole(
+//                         poly,
+//                         h,
+//                         std::back_inserter(patch_facets),
+//                         std::back_inserter(patch_vertices),
+//                         CGAL::Polygon_mesh_processing::parameters::vertex_point_map(get(CGAL::vertex_point, poly)).
+//                         geom_traits(Kernel())));
+//                 std::cout << " Number of facets in constructed patch: " << patch_facets.size() << std::endl;
+//                 std::cout << " Number of vertices in constructed patch: " << patch_vertices.size() << std::endl;
+//                 std::cout << " Fairing : " << (success ? "succeeded" : "failed") << std::endl;
+//                 ++nb_holes;
+//             }
+//         }
+//         std::cout << std::endl;
+//         std::cout << nb_holes << " holes have been filled" << std::endl;
+//     }
+
+    
 };
 
 
@@ -237,7 +306,7 @@ public:
             std::cout << '\n';
         }*/
 
-        std::cout << "extracting nef geometries done\n";
+        std::cout << "done\n";
     }
 
 
@@ -261,6 +330,8 @@ public:
     */
     static void process_shells_for_cityjson(std::vector<Shell_explorer>& shell_explorers)
     {
+        std::cout << "processing shells for cityjson ..." << '\n';
+
         // step 1
         // get all vertices of all shells and corresponding face indices of each shell ----------------------
         // first store all the vertices in a vector
@@ -304,6 +375,9 @@ public:
             }
         }
         // now we have cleaned_vertices and cleaned_faces to write to cityjson ------------------------------
+        
+        std::cout << "done" << '\n';
+
     }
 
 
@@ -311,13 +385,13 @@ public:
     /*
     * make a cube (type: Polyhedron) with side length: size
     * @param: 
-    * size -> indicating the side length of the cube, default value is set to 1
+    * size -> indicating the side length of the cube, default value is set to 0.1
     * @return:
     * Nef_polyhedron
     */
-    static Nef_polyhedron make_cube(double size = 1.0)
+    static Nef_polyhedron make_cube(double size = 0.1)
     {
-        Polyhedron_builder<Polyhedron::HalfedgeDS> polyhedron_builder;; // used for create a cube
+        Polyhedron_builder<Polyhedron::HalfedgeDS> polyhedron_builder; // used for create a cube
 
         // construct a cube with side length: size
 
@@ -416,11 +490,12 @@ public:
     * nef : the nef polyhedron which needs to be merged
     * size: a cube's side length
     */
-    static Nef_polyhedron minkowski_sum(Nef_polyhedron& nef, double size = 1.0)
+    static Nef_polyhedron minkowski_sum(Nef_polyhedron& nef, double size = 0.1)
     {
         Nef_polyhedron cube = make_cube(size);
         return CGAL::minkowski_sum_3(nef, cube);     
     }
+
 
 
 protected:
@@ -464,6 +539,133 @@ protected:
         }
         std::cout << "warning: please check find_vertex_index function, no index found" << '\n';
         return 0;
+    }
+
+
+};
+
+
+
+/*
+* ------------------------------------------------------------------------------------------------------------------------------------------
+* now we have finished building big nef polyhedron
+* there are some possible post processing steps
+* (1) regularization
+* (2) erosion
+* ------------------------------------------------------------------------------------------------------------------------------------------
+*/
+
+
+
+/*
+* class to perform possible post processing steps for Nef polyhedron
+* possible steps for now:
+* (1) regularization
+* (2) erosion 
+*/
+class PostProcesssing {
+public:
+
+    /*
+    * regularization
+    * returns the regularized polyhedron (closure of the interior)
+    */
+    Nef_polyhedron get_regularized_nef(Nef_polyhedron& nef) {
+        Nef_polyhedron regularized_nef = nef.regularization();
+        return regularized_nef;
+    }
+
+
+
+    /*
+    * get bounding box for Nef polyhedron
+    * use a user-defined size (10 units by default)
+    * 
+    * this function is inspired or just small modifications based on val3dity:
+    * see: https://github.com/tudelft3d/val3dity/blob/main/src/geomtools.cpp#L210
+    */
+    static Nef_polyhedron get_nef_bbox(Nef_polyhedron& nef, double size = 10) {
+        
+        double xmin = 1e12;
+        double ymin = 1e12;
+        double zmin = 1e12;
+        double xmax = -1e12;
+        double ymax = -1e12;
+        double zmax = -1e12;
+
+        Nef_polyhedron::Vertex_const_iterator v;
+        for (v = nef.vertices_begin(); v != nef.vertices_end(); v++)
+        {
+            if (CGAL::to_double(v->point().x()) - xmin < epsilon)
+                xmin = CGAL::to_double(v->point().x());
+
+            if (CGAL::to_double(v->point().y()) - ymin < epsilon)
+                ymin = CGAL::to_double(v->point().y());
+
+            if (CGAL::to_double(v->point().z()) - zmin < epsilon)
+                zmin = CGAL::to_double(v->point().z());
+
+            if (CGAL::to_double(v->point().x()) - xmax > epsilon)
+                xmax = CGAL::to_double(v->point().x());
+
+            if (CGAL::to_double(v->point().y()) - ymax > epsilon)
+                ymax = CGAL::to_double(v->point().y());
+
+            if (CGAL::to_double(v->point().z()) - zmax > epsilon)
+                zmax = CGAL::to_double(v->point().z());
+        }
+
+        //-- expand the bbox by size units
+        xmin -= size;
+        ymin -= size;
+        zmin -= size;
+        xmax += size;
+        ymax += size;
+        zmax += size;
+
+        //-- write an OFF file and convert Nef, simplest (and fastest?) solution
+        std::stringstream ss;
+        ss << "OFF" << std::endl
+            << "8 6 0" << std::endl
+            << xmin << " " << ymin << " " << zmin << std::endl
+            << xmax << " " << ymin << " " << zmin << std::endl
+            << xmax << " " << ymax << " " << zmin << std::endl
+            << xmin << " " << ymax << " " << zmin << std::endl
+            << xmin << " " << ymin << " " << zmax << std::endl
+            << xmax << " " << ymin << " " << zmax << std::endl
+            << xmax << " " << ymax << " " << zmax << std::endl
+            << xmin << " " << ymax << " " << zmax << std::endl
+            << "4 0 3 2 1" << std::endl
+            << "4 0 1 5 4" << std::endl
+            << "4 1 2 6 5" << std::endl
+            << "4 2 3 7 6" << std::endl
+            << "4 0 4 7 3" << std::endl
+            << "4 4 5 6 7" << std::endl;
+
+        Nef_polyhedron nefbbox;
+        CGAL::OFF_to_nef_3(ss, nefbbox);
+        return nefbbox;
+    }
+
+
+
+    /*
+    * erosion of a Nef
+    * (1) get bounding box
+    * (2) get its complement
+    * (3) enlarge the complement -> using minkowski sum
+    * (4) eroded_nef = nef - enlarged_complement? or bbox - enlarged_complement?
+    */
+    static Nef_polyhedron get_eroded_nef(Nef_polyhedron& nef, double minkowski_param = 0.01) {
+
+        Nef_polyhedron nefbbox = get_nef_bbox(nef);
+        Nef_polyhedron complement = nefbbox - nef;
+        Nef_polyhedron tmp = NefProcessing::minkowski_sum(complement, minkowski_param);
+        Nef_polyhedron eroded_nef = nef - tmp;
+
+        // regularization?
+
+        return eroded_nef;
     }
 
 

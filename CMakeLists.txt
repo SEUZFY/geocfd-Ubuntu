@@ -22,10 +22,10 @@ endif()
 include(CTest)
 enable_testing()
 
-# define data path
-add_definitions(
-  -DDATA_PATH=\"${PROJECT_SOURCE_DIR}/data\"
-)
+# # define data path
+# add_definitions(
+#   -DDATA_PATH=\"${PROJECT_SOURCE_DIR}/data\"
+# )
 
 # for CGAL_Qt5 
 # add_definitions(-DCGAL_USE_BASIC_VIEWER)

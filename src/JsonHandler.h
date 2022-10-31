@@ -121,7 +121,7 @@ public:
 	* and print the (x,y,z) coordinates of each vertex encountered
 	* lod specified: 1.2 & 1.3 & 2.2
 	*/
-	void read_certain_building(const json& j, const char* building_id, double lod) {
+	void read_certain_building(const json& j, std::string building_id, double lod) {
 		for (auto& co : j["CityObjects"].items()) {
 			if (co.key() == building_id)
 			{
@@ -180,6 +180,7 @@ public:
 			}
 		}
 	}
+
 
 
 
